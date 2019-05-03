@@ -1,12 +1,11 @@
 import React from 'react';
-import './App.css';
+import './app.css';
+import Board from '../components/Board';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <canvas id="board"></canvas>
-      </header>
+    <div className="App">      
+        <Board /> 
     </div>
   );
 }
