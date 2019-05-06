@@ -5,7 +5,7 @@ import Board from '../components/Board';
 function App() {
   return (
     <div className="App">      
-        <Board /> 
+        <Board width={300} height={600} /> 
     </div>
   );
 }

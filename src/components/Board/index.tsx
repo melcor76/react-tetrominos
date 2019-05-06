@@ -2,7 +2,12 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './styles.css';
 
-class Board extends React.Component {
+type BoardProps = {
+  width: number,
+  height: number
+}
+
+class Board extends React.Component<BoardProps> {
 
   private board: number[][];
   private ctx: CanvasRenderingContext2D;
@@ -26,7 +31,7 @@ class Board extends React.Component {
   }
 
   render() {
-    return <canvas ref="canvas" width="300" height="600" className="Board" />
+    return <canvas ref="canvas" width={this.props.width} height={this.props.height} className="Board" />
   }
 }
 
