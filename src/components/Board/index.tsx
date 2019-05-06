@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import './styles.css';
 
@@ -7,7 +7,7 @@ type BoardProps = {
   height: number
 }
 
-class Board extends React.Component<BoardProps> {
+class Board extends Component<BoardProps> {
 
   private board: number[][];
   private ctx: CanvasRenderingContext2D;
