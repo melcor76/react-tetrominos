@@ -1,7 +1,12 @@
 import React from 'react';
 
 const PlayButton = () => {
-  return  <button onClick={() => console.log('play')}>Play</button>
+
+  const handleClick = () => {
+    console.log('play');
+  };
+
+  return  <button onClick={handleClick}>Play</button>
 }
 
 export default PlayButton;
