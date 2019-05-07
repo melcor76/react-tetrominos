@@ -4,14 +4,7 @@ import { Provider } from 'react-redux';
 
 import './app.css';
 import Game from '../components/Game';
-
-const initialState = {
-    playing: false
-}
-
-function reducer(state = initialState, action: any) {
-    return state;
-}
+import reducer from '../redux/reducers';
 
 const store = createStore(reducer);
 

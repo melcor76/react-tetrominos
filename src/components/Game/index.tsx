@@ -1,23 +1,25 @@
-import React, { useState, FunctionComponent } from 'react';
+import React, { FunctionComponent, useReducer } from 'react';
 import { connect } from 'react-redux';
 import './game.css';
 import Board from '../Board';
+import reducer from '../../redux/reducers';
+import { stopPlaying, startPlaying } from '../../redux/actions';
 
 const Game = () => {
-  const [playing, setPlaying] = useState(false);
+  const [state, dispatch] = useReducer(reducer, {playing:false});
 
   const handlePlayingChange = () => {
-    if (playing) {
-      setPlaying(false);
+    if (state.playing) {
+      dispatch(stopPlaying());
     } else {
-      setPlaying(true);
+      dispatch(startPlaying());
     }
   } 
 
   return (
     <div className="game">
-      <Board width={300} height={600} playing={playing} />
-      <PlayButton playing={playing} onChangePlaying={handlePlayingChange} />
+      <Board width={300} height={600} playing={state.playing} />
+      <PlayButton playing={state.playing} onChangePlaying={handlePlayingChange} />
     </div>
   )
 }
