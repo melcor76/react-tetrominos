@@ -7,7 +7,7 @@ type BoardProps = {
   height: number
 }
 
-class Board extends Component<BoardProps> {
+export default class Board extends Component<BoardProps> {
 
   private board: number[][];
   private ctx: CanvasRenderingContext2D;
@@ -34,5 +34,3 @@ class Board extends Component<BoardProps> {
     return <canvas ref="canvas" width={this.props.width} height={this.props.height} className="Board" />
   }
 }
-
-export default Board;
