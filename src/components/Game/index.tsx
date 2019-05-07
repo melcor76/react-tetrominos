@@ -8,16 +8,14 @@ const Game = () => {
   const handlePlayingChange = () => {
     if (playing) {
       setPlaying(false);
-      console.log('game over!');
     } else {
       setPlaying(true);
-      console.log('game on!');
     }
   } 
 
   return (
     <div className="game">
-      <Board width={300} height={600} />
+      <Board width={300} height={600} playing={playing} />
       <PlayButton playing={playing} onChangePlaying={handlePlayingChange} />
     </div>
   )

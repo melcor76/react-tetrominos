@@ -4,18 +4,38 @@ import './styles.css';
 
 type BoardProps = {
   width: number,
-  height: number
+  height: number,
+  playing: boolean
 }
 
 export default class Board extends Component<BoardProps> {
 
   private board: number[][];
   private ctx: CanvasRenderingContext2D;
+  private interval: any;
 
   componentDidMount() {    
     const canvas = ReactDOM.findDOMNode(this.refs.canvas) as HTMLCanvasElement;
     this.ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
     this.initBoard();
+  }
+
+  componentDidUpdate() {
+    if (this.props.playing) {
+      this.startGameLoop();
+    } else {
+      clearInterval(this.interval);
+    }
+  }
+
+  startGameLoop() {
+    this.interval = setInterval(() => {
+      this.tick();
+    }, 1000);
+  }
+
+  tick() {
+    console.log('tick');
   }
 
   initBoard() {
