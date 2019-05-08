@@ -32,18 +32,21 @@ export default class Board extends Component<BoardProps> {
     }
   }
 
-  startGameLoop() {
-    let piece =  new Piece({ ctx: this.ctx });    
-    this.currentPiece = piece;
+  startGameLoop() {   
+    this.currentPiece = new Piece({ ctx: this.ctx });
     this.interval = setInterval(() => {
       this.tick();
-    }, 1000);
+    }, 500);
   }
 
   tick() {
+    if (this.currentPiece.y > 16) {
+      this.currentPiece = new Piece({ ctx: this.ctx });    
+    }
+
     this.currentPiece.clear();
     this.currentPiece.y++;
-    this.currentPiece.draw();
+    this.currentPiece.draw();    
   }
 
   animate() {
