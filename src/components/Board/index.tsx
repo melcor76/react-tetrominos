@@ -24,6 +24,10 @@ export default class Board extends Component<BoardProps> {
     this.initBoard();
   }
 
+  componentWillUnmount() {
+    document.removeEventListener("keydown", this.keyHandler);
+  }
+
   componentDidUpdate() {
     if (this.props.playing) {
       this.initBoard();
@@ -42,24 +46,43 @@ export default class Board extends Component<BoardProps> {
 
   tick() {    
     if (!this.isValidMove(0, 1)) {
+      this.freeze();
       this.currentPiece = new Piece({ ctx: this.ctx });    
     }
 
     this.drawPiece(0, 1);
   }
 
-  isValidMove(x: number, y: number): boolean {
-    if (this.currentPiece.x + x < -1) {
-      return false;
-    }
-    if (this.currentPiece.x + x > 7) {
-      return false;
-    }
-    if (this.currentPiece.y + y > 17) {
-      return false;
-    }
+  // checks if the resulting position of current shape will be feasible
+  isValidMove(offsetX: number, offsetY: number) {
+    const cols = 10;
+    const rows = 20;
+    offsetX = this.currentPiece.x + offsetX;
+    offsetY = this.currentPiece.y + offsetY;      
 
+    for (let y = 0; y < 4; y++) {
+      for (let x = 0; x < 4; x++) {
+        if (this.currentPiece.shape[y][x]) {
+          // Stop at the walls
+          if (x + offsetX < 0 || x + offsetX >= cols) {
+            return false;
+          }
+          // Stop at bottom
+          if (y + offsetY >= rows) {
+            return false;
+          }
+          // Occupied by tetromino
+          if (this.isOccupied(x + offsetX, y + offsetY)) {
+            return false;
+          }
+        }
+      }
+    }
     return true;
+  }
+
+  isOccupied(x: number, y: number): boolean {
+    return this.board[y] && this.board[y][x] ? true : false;
   }
 
   drawPiece(x: number, y: number) {    
@@ -78,13 +101,26 @@ export default class Board extends Component<BoardProps> {
   }
 
   initBoard() {
+    const rows = 20;
+    const cols = 10;
     this.board = [];
-    this.ctx.clearRect(0, 0, this.z * 10, this.z * 20);
-    for (let row = 0; row < 10; row++) {
+    this.ctx.clearRect(0, 0, this.z * cols, this.z * rows);
+    for (let row = 0; row < rows; row++) {
       this.board[row] = [];
-      for(let col = 0; col < 20; col++) {
+      for(let col = 0; col < cols; col++) {
         this.board[row][col] = 0;
-        this.ctx.strokeRect(this.z * row, this.z * col, this.z, this.z);
+        this.ctx.strokeRect(this.z * col, this.z * row, this.z, this.z);
+      }
+    }
+  }
+
+  // stop shape at its position and fix it to board
+  freeze() {
+    for (let y = 0; y < 4; y++) {
+      for (let x = 0; x < 4; x++) {
+        if (this.currentPiece.shape[y][x]) {
+          this.board[y + this.currentPiece.y][x + this.currentPiece.x] = this.currentPiece.shape[y][x];
+        }
       }
     }
   }

@@ -32,7 +32,7 @@ export default class Piece extends Component<PieceProps> {
 
   spawn() {
     this.x = 3;
-    this.y = 0;
+    this.y = -2;
     this.type = this.getTypeId();
     this.color = COLORS[this.type];
     let shape = SHAPES[this.type];
