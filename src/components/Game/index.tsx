@@ -6,7 +6,7 @@ import reducer from '../../redux/reducers';
 import { stopPlaying, startPlaying } from '../../redux/actions';
 
 const Game = () => {
-  const [state, dispatch] = useReducer(reducer, {playing:false});
+  const [state, dispatch] = useReducer(reducer, {playing:false});  
 
   const handlePlayingChange = () => {
     if (state.playing) {
@@ -14,7 +14,7 @@ const Game = () => {
     } else {
       dispatch(startPlaying());
     }
-  }
+  }  
 
   return (
     <div className="game">
@@ -28,5 +28,4 @@ const PlayButton:FunctionComponent<{playing: boolean, onChangePlaying: any}> = (
   <button onClick={onChangePlaying}>{playing ? 'Stop' : 'Play'}</button>
 );
 
-//export default Game;
 export default connect()(Game);
