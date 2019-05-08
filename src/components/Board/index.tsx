@@ -25,6 +25,7 @@ export default class Board extends Component<BoardProps> {
 
   componentDidUpdate() {
     if (this.props.playing) {
+      this.initBoard();
       this.startGameLoop();
     } else {
       clearInterval(this.interval);
@@ -55,6 +56,7 @@ export default class Board extends Component<BoardProps> {
 
   initBoard() {
     this.board = [];
+    this.ctx.clearRect(0, 0, this.z * 10, this.z * 20);
     for (let row = 0; row < 10; row++) {
       this.board[row] = [];
       for(let col = 0; col < 20; col++) {
