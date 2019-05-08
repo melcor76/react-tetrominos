@@ -14,7 +14,7 @@ const Game = () => {
     } else {
       dispatch(startPlaying());
     }
-  } 
+  }
 
   return (
     <div className="game">
@@ -28,9 +28,5 @@ const PlayButton:FunctionComponent<{playing: boolean, onChangePlaying: any}> = (
   <button onClick={onChangePlaying}>{playing ? 'Stop' : 'Play'}</button>
 );
 
-const mapStateToProps = (state: any) => {
-  return { playing: state.playing };
-};
-
 //export default Game;
-export default connect(mapStateToProps)(Game);
+export default connect()(Game);
