@@ -13,6 +13,7 @@ function reducer(state = initialState, action: any) {
       case Type.START_PLAYING: 
           return { playing: true };
       case Type.STOP_PLAYING:
+          console.log('STOP_PLAYING');
           return { playing: false };
       default:
           return state;

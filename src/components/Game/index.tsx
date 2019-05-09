@@ -14,11 +14,11 @@ const Game = () => {
     } else {
       dispatch(startPlaying());
     }
-  }  
+  }
 
   return (
     <div className="game">
-      <Board width={300} height={600} playing={state.playing} />
+      <Board width={300} height={600} playing={state.playing} dispatch={dispatch} />
       <PlayButton playing={state.playing} onChangePlaying={handlePlayingChange} />
     </div>
   )

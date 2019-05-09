@@ -2,11 +2,13 @@ import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import './styles.css';
 import Piece from '../Piece';
+import { stopPlaying } from '../../redux/actions';
 
 type BoardProps = {
   width: number,
   height: number,
-  playing: boolean
+  playing: boolean,
+  dispatch: any
 }
 
 export default class Board extends Component<BoardProps> {
@@ -15,7 +17,7 @@ export default class Board extends Component<BoardProps> {
   private ctx: CanvasRenderingContext2D;
   private interval: any;
   private z = 30;
-  private currentPiece: Piece;
+  private currentPiece: Piece;  
 
   componentDidMount() {    
     const canvas = ReactDOM.findDOMNode(this.refs.canvas) as HTMLCanvasElement;
@@ -44,13 +46,18 @@ export default class Board extends Component<BoardProps> {
     }, 500);
   }
 
-  tick() {    
-    if (!this.isValidMove(0, 1, this.currentPiece.shape)) {
+  tick() {
+    if (this.isValidMove(0, 1, this.currentPiece.shape)) {
+      this.drawPiece(0, 1);
+    } else {
       this.freeze();
-      this.currentPiece = new Piece({ ctx: this.ctx });    
+      // TODO clear lines
+      if (this.currentPiece.y < 0) { // Game Over
+        this.props.dispatch(stopPlaying());
+        return;
+      }
+      this.currentPiece = new Piece({ ctx: this.ctx });
     }
-
-    this.drawPiece(0, 1);
   }
 
   // checks if the resulting position of current shape will be feasible
@@ -122,7 +129,7 @@ export default class Board extends Component<BoardProps> {
   freeze() {
     for (let y = 0; y < this.currentPiece.shape.length; y++) {
       for (let x = 0; x < this.currentPiece.shape.length; x++) {
-        if (this.currentPiece.shape[y][x]) {
+        if (this.currentPiece.shape[y][x] && (y + this.currentPiece.y > -1)) {
           this.board[y + this.currentPiece.y][x + this.currentPiece.x] = this.currentPiece.shape[y][x];
         }
       }
@@ -130,8 +137,18 @@ export default class Board extends Component<BoardProps> {
   }
 
   keyHandler = (event: KeyboardEvent) => {	    
-    // console.log("Key code: " + event.key);
-    if (event.key === "ArrowLeft") {
+    //console.log("Key code: " + event.key);
+    if (event.key === "ArrowDown") {
+      if (this.isValidMove(0, 1, this.currentPiece.shape)) {
+        this.drawPiece(0, 1);
+      }
+    /*} else if (event.key === "Enter") {
+      while(this.isValidMove(0, 1, this.currentPiece.shape)) {
+        this.currentPiece.y++;
+        //console.log(this.currentPiece.y);
+      }      
+      this.tick(); */
+    } else if (event.key === "ArrowLeft") {
       if (this.isValidMove(-1, 0, this.currentPiece.shape)) {
         this.drawPiece(-1, 0);     
       } 
