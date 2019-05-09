@@ -45,7 +45,7 @@ export default class Board extends Component<BoardProps> {
   }
 
   tick() {    
-    if (!this.isValidMove(0, 1)) {
+    if (!this.isValidMove(0, 1, this.currentPiece.shape)) {
       this.freeze();
       this.currentPiece = new Piece({ ctx: this.ctx });    
     }
@@ -54,15 +54,15 @@ export default class Board extends Component<BoardProps> {
   }
 
   // checks if the resulting position of current shape will be feasible
-  isValidMove(offsetX: number, offsetY: number) {
+  isValidMove(offsetX: number, offsetY: number, shape: number[][]) {
     const cols = 10;
     const rows = 20;
     offsetX = this.currentPiece.x + offsetX;
-    offsetY = this.currentPiece.y + offsetY;      
+    offsetY = this.currentPiece.y + offsetY;
 
-    for (let y = 0; y < 4; y++) {
-      for (let x = 0; x < 4; x++) {
-        if (this.currentPiece.shape[y][x]) {
+    for (let y = 0; y < shape.length; y++) {
+      for (let x = 0; x < shape.length; x++) {
+        if (shape[y][x]) {          
           // Stop at the walls
           if (x + offsetX < 0 || x + offsetX >= cols) {
             return false;
@@ -85,10 +85,14 @@ export default class Board extends Component<BoardProps> {
     return this.board[y] && this.board[y][x] ? true : false;
   }
 
-  drawPiece(x: number, y: number) {    
+  drawPiece(x: number, y: number, rotate: boolean = false) {
     this.currentPiece.clear();
-    this.currentPiece.x += x;
-    this.currentPiece.y += y;
+    if (rotate) {
+      this.currentPiece.rotate();
+    } else {
+      this.currentPiece.x += x;
+      this.currentPiece.y += y;
+    }
     this.currentPiece.draw();
   }
 
@@ -116,8 +120,8 @@ export default class Board extends Component<BoardProps> {
 
   // stop shape at its position and fix it to board
   freeze() {
-    for (let y = 0; y < 4; y++) {
-      for (let x = 0; x < 4; x++) {
+    for (let y = 0; y < this.currentPiece.shape.length; y++) {
+      for (let x = 0; x < this.currentPiece.shape.length; x++) {
         if (this.currentPiece.shape[y][x]) {
           this.board[y + this.currentPiece.y][x + this.currentPiece.x] = this.currentPiece.shape[y][x];
         }
@@ -128,12 +132,19 @@ export default class Board extends Component<BoardProps> {
   keyHandler = (event: KeyboardEvent) => {	    
     // console.log("Key code: " + event.key);
     if (event.key === "ArrowLeft") {
-      if (this.isValidMove(-1, 0)) {
+      if (this.isValidMove(-1, 0, this.currentPiece.shape)) {
         this.drawPiece(-1, 0);     
       } 
     } else if (event.key === "ArrowRight") {
-      if (this.isValidMove(1, 0)) {
+      if (this.isValidMove(1, 0, this.currentPiece.shape)) {
         this.drawPiece(1, 0);
+      }
+    } else if (event.key === "ArrowUp") {
+      // rotate
+      const nextShapeIndex = this.currentPiece.getNextShapeIndex();
+      var nextShape = this.currentPiece.getShape(nextShapeIndex);    
+      if (this.isValidMove(0, 0, nextShape)) {        
+        this.drawPiece(0, 0, true);
       }
     }
   }

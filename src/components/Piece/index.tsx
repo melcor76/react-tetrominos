@@ -1,15 +1,7 @@
 import { Component } from 'react';
+import { I, J, L, O, S, T, Z } from './tetriminos';
 
-export const SHAPES = [
-  [0, 0, 0, 0, 1, 1, 1, 1], // I = Cyan
-  [0, 0, 0, 0, 1, 1, 1, 0, 1], // L = Orange
-  [0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1], // J = Blue
-  [0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1], // O = Yellow
-  [0, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1], // Z = Red
-  [0, 0, 0, 0, 0, 1, 1, 0, 1, 1], // S = Green
-  [0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1] // T = Purple
-];
-
+export const PIECES = [I, J, L, O, S, T, Z];
 export const COLORS = ["cyan", "orange", "blue", "yellow", "red", "green", "purple"];
 
 interface PieceProps {
@@ -22,6 +14,7 @@ export default class Piece extends Component<PieceProps> {
   type: number;
   shape: number[][];
   color: string;
+  rotation: number;
   clearColor = "#282c34"; // TODO
   z = 30; // TODO const
 
@@ -33,21 +26,15 @@ export default class Piece extends Component<PieceProps> {
   spawn() {
     this.x = 3;
     this.y = -2;
-    this.type = this.getTypeId();
+    this.type = this.getTypeId();    
     this.color = COLORS[this.type];
-    let shape = SHAPES[this.type];
-    this.shape = []
-    for (let y = 0; y < 4; y++) {
-      this.shape[y] = [];
-      for (let x = 0; x < 4; x++) {
-        let i = 4 * y + x;
-        if (shape[i]) {
-          this.shape[y][x] = this.type + 1;
-        } else {
-          this.shape[y][x] = 0;
-        }
-      }
-    }
+    this.rotation = 0;
+    this.shape = PIECES[this.type][this.rotation];
+  }
+
+  rotate() {
+    this.rotation = this.getNextShapeIndex();
+    this.shape = this.getShape(this.rotation);
   }
 
   draw() {
@@ -57,14 +44,22 @@ export default class Piece extends Component<PieceProps> {
 
   clear() {
     this.props.ctx.fillStyle = this.clearColor;
-    this.drawShape();    
+    this.drawShape();
+  }
+
+  getNextShapeIndex(): number {
+    return (this.rotation + 1) % 4;
+  }
+
+  getShape(index: number): number[][] {
+    return PIECES[this.type][index];
   }
 
   drawShape() {
-    for (var ix = 0; ix < this.shape.length; ix++) {
-      for (var iy = 0; iy < this.shape.length; iy++) {
-        if (this.shape[ix][iy]) {          
-          this.drawSquare(this.x + ix, this.y + iy);
+    for (let y = 0; y < this.shape.length; y++) {
+      for (let x = 0; x < this.shape.length; x++) {
+        if (this.shape[y][x]) {      
+          this.drawSquare(this.x + x, this.y + y);
         }
       }
     }
@@ -77,7 +72,7 @@ export default class Piece extends Component<PieceProps> {
   }
 
   private getTypeId(): number {
-    return Math.floor(Math.random() * SHAPES.length);
+    return Math.floor(Math.random() * PIECES.length);
   }
 
 }
